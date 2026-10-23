@@ -2,13 +2,13 @@
 
 The greatest common divisor of $a$ and $b$, denoted $\gcd(a, b)$, is the largest positive integer that divides both $a$ and $b$. 
 
-For the proof of the Euclidean Algorithm, we really rely on the divisibility properties below. For all properties, let $a$, $b$, and $c$ be integers. Then:
+For the proof of the Euclidean algorithm, we really rely on the divisibility properties below. For all properties, let $a$, $b$, and $c$ be integers. Then:
 1. If $c$ divides $a$ and $c$ divides $b$, then $c$ divides any linear combination of $a$ and $b$.
 2. If $a$ divides $c$ and $c$ divides $a$, then $a = \pm c$ (if $a$ and $c$ are integers).
 
 
 ## Euclidean Algorithm
-Given positive integers $a$ and $b$ with $a \geq b$, write $a = bq + r$. Then $\gcd(a, b) = \gcd(b, r)$ and $0 \leq r < b$. The idea behind the Euclidean Algorithm is to iterate this process.
+Given positive integers $a$ and $b$ with $a \geq b$, write $a = bq + r$. Then $\gcd(a, b) = \gcd(b, r)$ and $0 \leq r < b$. The idea behind the Euclidean algorithm is to iterate this process.
 1. Let $r_0 = a$, $r_1 = b$, and $i = 1$.
 2. Divide $r_{i - 1}$ by $r_i$ with remainder, to get $r_{i - 1} = r_i \cdot q_i + r_{i + 1}$ where $0 \leq r_{i + 1} < r_i$.
 3. If $r_{i + 1} = 0$, then $\gcd(a, b) = r_i$ and we are done. Otherwise, increase $i$ by 1 and go to step 2.
@@ -38,9 +38,9 @@ $\gcd (a, b) = u \cdot \gcd(b, r)$ where $u = \pm 1$. If we assume $\gcd$ is alw
 The other important part to note is that $0 \leq r < b$, so as we iterate this, with $\gcd (a, b) = \gcd (r_0, r_1) = \gcd(r_1, r_2) = \dots$ then for all $i$, $0 \leq r_{i + 1} < r_i$ until we reach 0, so the algorithm must terminate.
 
 ## Extended Euclidean Algorithm 
-One property of $\gcd(a, b)$ is that it can be written as a linear combination of $a$ and $b$. That is, there exist integers $x$ and $y$ such that $ax + by = \gcd(a, b)$. Given $a$ and $b$, the extended Euclidean Algorithm returns $\gcd(a, b)$, $x$, and $y$.
+One property of $\gcd(a, b)$ is that it can be written as a linear combination of $a$ and $b$. That is, there exist integers $x$ and $y$ such that $ax + by = \gcd(a, b)$. Given $a$ and $b$, the extended Euclidean algorithm returns $\gcd(a, b)$, $x$, and $y$.
 
-The extended Euclidean Algorithm is computed in a very similar manner to the Euclidean Algorithm. Intuitively, the main difference is that now we also will solve each equation of the form $$r_{i - 1} = r_i \cdot q_i + r_{i + 1}$$ for $r_{i + 1}$ (for equations where $r_{i + 1}\neq 0$), and substitute in the linear combinations as appropriate. This is best demonstrated by example.
+The extended Euclidean algorithm is computed in a very similar manner to the Euclidean algorithm. Intuitively, the main difference is that now we also will solve each equation of the form $$r_{i - 1} = r_i \cdot q_i + r_{i + 1}$$ for $r_{i + 1}$ (for equations where $r_{i + 1}\neq 0$), and substitute in the linear combinations as appropriate. This is best demonstrated by example.
 
 ### Example
 Compute $\gcd(3214, 487)$ and find the values for $x$ and $y$ such that $3214 \cdot x + 487 \cdot y = \gcd(3214, 487)$. 
@@ -77,7 +77,7 @@ $$
 \end{aligned}
 $$
 
-Alternatively, we can keep track of coefficients as we step forward through the Euclidean Algorithm.
+Alternatively, we can keep track of coefficients as we step forward through the Euclidean algorithm.
 
 1. $r_0 = 3214$, $r_1 = 487$. Then $3214 = 487 \cdot 6 + 292$, so $r_2 = 292$. Rearranging gives us $$3214 - 487 \cdot 6 = 292.$$
 2. $r_1 = 487$, $r_2 = 292$. Then $487 = 292 \cdot 1 + 195$, so $r_3 = 195$. Rearranging and substituting then gives us 
@@ -111,6 +111,8 @@ The tradeoff to this version is that instead of using recursion, you have to kee
 
 
 ### Application: Finding modular inverses
+
+Let's say we want to find the inverse of $a \pmod n$. In general, an inverse will only exist if $\gcd(a, n) = 1$. From the extended Euclidean algorithm, we can therefore write $$a \cdot x + n \cdot y = 1.$$ Looking at this modulo $n$, we then get $$a \cdot x \equiv 1 \pmod{n}.$$ Therefore $x \pmod{n}$ where $x$ is the integer that we found via the extended Euclidean algorithm will be the inverse of $a$ modulo $n$.
 
 ### Time complexity
 
