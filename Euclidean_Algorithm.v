@@ -145,3 +145,22 @@ Proof.
         -- apply Nat.divide_mul_l. exact Hdb.
         -- rewrite <- H0. exact Hda.
 Qed. 
+
+Theorem gcd_symm : forall (a b : nat),
+  gcd a b = gcd b a.
+Proof.
+  intros a b. 
+  (* 
+    Show that gcd a b divides gcd b a and vice versa.
+    Then use divisibility properties to show equal (for 
+    natural numbers).
+  *)
+  apply Nat.divide_antisym.
+  - (* gcd (a, b) | gcd (b, a) *) apply gcd_maximal.
+    + apply gcd_div_b.
+    + apply gcd_div_a.
+  - (* gcd (b, a) | gcd (a, b) *) apply gcd_maximal.
+    + apply gcd_div_b.
+    + apply gcd_div_a.
+Qed.
+
