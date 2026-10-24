@@ -164,3 +164,63 @@ Proof.
     + apply gcd_div_a.
 Qed.
 
+(* Defining gcd using inductive/fixpoint only. Need to use
+  a 'fuel' to ensure termination...essentially cap the number
+  of iterations you are allowed to do. *)
+Fixpoint gcd_fixpt_guarded (n a b : nat) : option nat := 
+  match n with 
+  | 0 => None
+  | S n' => match b with 
+    | 0 => Some a 
+    | S _ => gcd_fixpt_guarded n' b (a mod b) 
+    end
+  end.
+
+(* 
+  Remark: add 1 to guard to deal with following edge cases:
+    - if a and b are both 0, would ideally want guarded version to
+      return Some 0 instead of None
+    - guarded version does not rely on immediately knowing whether 
+      b > a, so may need an extra iteration to force the first term
+      in gcd to be the larger one.
+  This means the 'None' branch is never actually used.
+*)
+Definition gcd_fixpt (a b : nat) : nat :=
+  match (gcd_fixpt_guarded (b + 1) a b) with 
+  | None => 0 
+  | Some d => d 
+  end.
+
+(* 
+  First prove that when b < n, (gcd_fixpt_guarded n a b) will never 
+  be None. 
+*)
+Theorem gcd_fixpt_guarded_not_none : forall (n a b : nat),
+  b < n ->
+  gcd_fixpt_guarded n a b <> None.
+Proof.
+  intros n.
+  induction n as [|n' IH].
+  - (* Hypothesis of a + b < 0 doesn't hold if a and b are in N *) 
+    lia.
+  - (* a + b < S n' *)
+    intros a b H. simpl.
+    destruct b as [|b'] eqn:Hb.
+    + intros contra. discriminate contra.
+    + apply IH. rewrite <- Hb. rewrite <- Hb in H.
+      apply Nat.lt_le_trans with b.
+      * apply Nat.mod_upper_bound. lia.
+      * lia.
+Qed.
+
+Lemma gcd_fixpt_eq : forall a b,
+  exists d, gcd_fixpt_guarded (b + 1) a b = Some d.
+Proof.
+  intros a b. destruct (gcd_fixpt_guarded (b + 1) a b) eqn:Heq.
+  - (* gcd_fixpt_guarded (b + 1) a b = Some n *) exists n. reflexivity.
+  - (* gcd_fixpt_guarded (b + 1) a b = None *)
+    assert (b < (b + 1)) as Hb.
+    + lia.
+    + apply (gcd_fixpt_guarded_not_none (b + 1) a b) in Hb.
+      rewrite Heq in Hb. destruct Hb. reflexivity.
+Qed.    
